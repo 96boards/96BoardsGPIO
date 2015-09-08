@@ -31,6 +31,16 @@
 #include <fcntl.h>
 #include "gpio.h"
 
+#define GPIO_OFFSET 23
+
+struct GPIO_INFO {
+    int SoC_number;
+    int direction_fd;;
+    int value_fd;
+    char * gpio;
+    char * path;
+};
+
 struct GPIO_VALUES {
     int SoC_number;
     int Board_pin_number;
@@ -87,10 +97,13 @@ static struct GPIO_VALUES bubblegum[] = {
     { 26, 34, "GPIO_L", "GPIOD26", "26" },
 };
 
+static struct GPIO_INFO gpio_info[12];
+static struct GPIO_INFO * info;
 
 int init_96Boards_GPIO_library(char * board){
     int ret = -1;
     
+    memset(gpio_info,0,sizeof(gpio_info));
     if (!strcmp(board, "dragon")){
         current_board = dragon;
         ret = 0;
@@ -129,27 +142,30 @@ int open_GPIO( struct GPIO_INFO * info, char * gpio_path ) {
     return(ret);
 }
 
-int open_GPIO_Board_pin_number( int pin, struct GPIO_INFO * info ) {
+int open_GPIO_Board_pin_number( int pin ) {
     int ret = -1;
     int x;
     char gpio_path[50];
     struct GPIO_VALUES * board;
     
-    for (x=0, info->SoC_number = 0, board = current_board; x<12 ;x++, board++){
-        if (board->Board_pin_number == pin){
-            info->SoC_number = board->SoC_number;
-            info->gpio = board->SoC_text_number;
-            strcpy(gpio_path,"/sys/class/gpio/gpio");
-            strcat(gpio_path,info->gpio);
-            strcat(gpio_path,"/");
-            ret = open_GPIO( info, gpio_path );
-            break;
+    if (pin >=23 && pin <= 34 ){
+        info = &gpio_info[pin - GPIO_OFFSET];
+        for (x=0, info->SoC_number = 0, board = current_board; x<12 ;x++, board++){
+            if (board->Board_pin_number == pin){
+                info->SoC_number = board->SoC_number;
+                info->gpio = board->SoC_text_number;
+                strcpy(gpio_path,"/sys/class/gpio/gpio");
+                strcat(gpio_path,info->gpio);
+                strcat(gpio_path,"/");
+                ret = open_GPIO( info, gpio_path );
+                break;
+            }
         }
     }
     return(ret);
 }
 
-int open_GPIO_SoC_number( int gpio, struct GPIO_INFO * info ) {
+int open_GPIO_SoC_number( int gpio ) {
     int ret = -1;
     int x;
     char gpio_path[50];
@@ -157,6 +173,7 @@ int open_GPIO_SoC_number( int gpio, struct GPIO_INFO * info ) {
     
     for (x=0, info->SoC_number = 0, board  = current_board; x<12 ;x++, board++){
         if (board->SoC_number == gpio){
+            info = &gpio_info[x];
             info->SoC_number = board->SoC_number;
             info->gpio = board->SoC_text_number;
             strcpy(gpio_path,"/sys/class/gpio/gpio");
@@ -169,66 +186,86 @@ int open_GPIO_SoC_number( int gpio, struct GPIO_INFO * info ) {
     return(ret);
 }
 
-int close_GPIO( struct GPIO_INFO * info ) {
+int close_GPIO( int pin ) {
     int ret = -1;
     int fd;
     
-    if (info != NULL && info->SoC_number ){
-        if ((ret = fd = open("/sys/class/gpio/unexport", O_WRONLY))!= -1){
-            close(info->direction_fd);
-            close(info->value_fd);
-            if ((ret = write(fd, info->gpio, strlen(info->gpio)))!= -1){
-                ret = close(fd);
+    if (pin >=23 && pin <= 34 ){
+        info = &gpio_info[pin - GPIO_OFFSET];
+        if (info->SoC_number ){
+            if ((ret = fd = open("/sys/class/gpio/unexport", O_WRONLY))!= -1){
+                close(info->direction_fd);
+                close(info->value_fd);
+                if ((ret = write(fd, info->gpio, strlen(info->gpio)))!= -1){
+                    ret = close(fd);
+                }
             }
         }
     }
     return(ret);
 }
 
-int setup_GPIO( struct GPIO_INFO * info, char * direction ) {
+int setup_GPIO( int pin, char * direction ) {
     int ret = -1;
     
-    if (info != NULL){
-        if (!strcmp(direction, "out") || !strcmp(direction, "in")){
-            lseek(info->direction_fd, 0, SEEK_SET);
-            if (write(info->direction_fd, direction, strlen(direction))>0){
-                ret = 0;
+    if (pin >=23 && pin <= 34 ){
+        info = &gpio_info[pin - GPIO_OFFSET];
+        if (info->SoC_number){
+            if (!strcmp(direction, "out") || !strcmp(direction, "in")){
+                lseek(info->direction_fd, 0, SEEK_SET);
+                if (write(info->direction_fd, direction, strlen(direction))>0){
+                    ret = 0;
+                }
             }
         }
     }
     return(ret);
 }
 
-int digitalRead( struct GPIO_INFO * info ) {
+int digitalRead(int pin) {
+    int ret = -1;
     char value;
-    lseek(info->value_fd, 0, SEEK_SET);
-    if (read(info->value_fd, &value, 1)==1){
-        printf("value = %c\n",value);
-        if (value == '1'){
-            return(HIGH);
-        }else{
-            return(LOW);
+    
+    
+    if (pin >=23 && pin <= 34 ){
+        info = &gpio_info[pin - GPIO_OFFSET];
+        if (info->SoC_number){
+            lseek(info->value_fd, 0, SEEK_SET);
+            if (read(info->value_fd, &value, 1)==1){
+                printf("value = %c\n",value);
+                if (value == '1'){
+                    ret = HIGH;
+                }else{
+                    ret = LOW;
+                }
+            } else {
+                ret = -1;
+            }
         }
-    } else {
-        return (-1);
     }
+    return(ret);
 }
 
-int digitalWrite( struct GPIO_INFO * info, int value ) {
+int digitalWrite( int pin, int value ) {
     int ret = -1;
     
-    lseek(info->value_fd, 0, SEEK_SET);
-    if (value == HIGH ){
-        if (write(info->value_fd, "1", 1 )==1){
-            ret = 0;
-        } else {
-            ret = -1;
-        }
-    }else if (value == LOW){
-        if (write(info->value_fd, "0", 1 )==-1){
-            ret = 0;
-        } else {
-           ret = -1;
+    if (pin >=23 && pin <= 34 ){
+        info = &gpio_info[pin - GPIO_OFFSET];
+        if (info->SoC_number){
+            lseek(info->value_fd, 0, SEEK_SET);
+            if (value == HIGH ){
+                if (write(info->value_fd, "1", 1 )==1){
+                    ret = 0;
+                } else {
+                    ret = -1;
+                }
+            }else if (value == LOW){
+                if (write(info->value_fd, "0", 1 )==-1){
+                    ret = 0;
+                } else {
+                   ret = -1;
+                }
+            }
         }
     }
     return(ret);

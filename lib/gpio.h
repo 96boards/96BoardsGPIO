@@ -26,18 +26,10 @@
 #define HIGH 1
 #define LOW 0
 
-struct GPIO_INFO {
-    int SoC_number;
-    int direction_fd;;
-    int value_fd;
-    char * gpio;
-    char * path;
-};
-
 extern int init_96Boards_GPIO_library(char * );
-extern int open_GPIO_Board_pin_number( int, struct GPIO_INFO * );
-extern int open_GPIO_SoC_number( int, struct GPIO_INFO * );
-extern int close_GPIO( struct GPIO_INFO * );
-extern int setup_GPIO( struct GPIO_INFO *, char * );
-extern int digitalRead( struct GPIO_INFO * );
-extern int digitalWrite( struct GPIO_INFO *, int );
+extern int open_GPIO_Board_pin_number( int );
+extern int open_GPIO_SoC_number( int );
+extern int close_GPIO( int );
+extern int setup_GPIO( int, char * );
+extern int digitalRead( int );
+extern int digitalWrite( int, int );

@@ -47,7 +47,8 @@ static struct GPIO_VALUES dragon[] = {
     {  13, 25, "GPIO_C", "GPIO_13", "13" },
     {  69, 26, "GPIO_D", "GPIO_69", "69" },
     { 115, 27, "GPIO_E", "GPIO_115", "115" },
-    {   4, 28, "GPIO_F", "GPIO_4", "4" },
+/*    {   4, 28, "GPIO_F", "GPIO_4", "  4" },*/
+    { 507, 28, "GPIO_F", "GPIO_4", "507" },
     {  24, 29, "GPIO_G", "GPIO_24", "24" },
     {  25, 30, "GPIO_H", "GPIO_25", "25" },
     {  35, 31, "GPIO_I", "GPIO_35", "35" },
@@ -57,18 +58,33 @@ static struct GPIO_VALUES dragon[] = {
 };
 
 static struct GPIO_VALUES hikey[] = { 
-    {  0, 23, "GPIO_A", "GPIO2_0",		 "0" },
-    {  0, 24, "GPIO_B", "GPIO2_1",		 "0" },
-    {  0, 25, "GPIO_C", "GPIO2_2",		 "0" },
-    {  0, 26, "GPIO_D", "GPIO3_3",		 "0" },
-    {  0, 27, "GPIO_E", "GPIO2_4",		 "0" },
-    {  0, 28, "GPIO_F", "BL_PWDN0GPIO9_1",	 "0" },
-    {  0, 29, "GPIO_G", "GPIO6_7_DSI_TE0",	 "0" },
-    {  0, 30, "GPIO_H", "GPIO2_7",		 "0" },
-    {  0, 31, "GPIO_I", "ISP_RSTB0_GPIO10_2",	 "0" },
-    {  0, 32, "GPIO_J", "ISP_RSTB0_GPIO9_1",	 "0" },
-    {  0, 33, "GPIO_K", "GSP_RSTB1_GPIO10_3",	 "0" },
-    {  0, 34, "GPIO_L", "ISP_RSTB0_GPIO9_2",	 "0" },
+    {  488, 23, "GPIO_A", "GPIO2_0",		 "488" },
+    {  489, 24, "GPIO_B", "GPIO2_1",		 "489" },
+    {  490, 25, "GPIO_C", "GPIO2_2",		 "490" },
+    {  491, 26, "GPIO_D", "GPIO3_3",		 "491" },
+    {  492, 27, "GPIO_E", "GPIO2_4",		 "492" },
+    {  415, 28, "GPIO_F", "BL_PWDN0GPIO9_1",	 "415" },
+    {  463, 29, "GPIO_G", "GPIO6_7_DSI_TE0",	 "463" },
+    {  495, 30, "GPIO_H", "GPIO2_7",		 "495" },
+    {  426, 31, "GPIO_I", "ISP_RSTB0_GPIO10_2",	 "426" },
+    {  433, 32, "GPIO_J", "ISP_RSTB0_GPIO9_1",	 "433" },
+    {  427, 33, "GPIO_K", "GSP_RSTB1_GPIO10_3",	 "427" },
+    {  434, 34, "GPIO_L", "ISP_RSTB0_GPIO9_2",	 "434" },
+};
+
+static struct GPIO_VALUES bubblegum[] = {
+    { 19, 23, "GPIO_A", "GPIOD19", "19" },
+    { 18, 24, "GPIO_B", "GPIOD18", "18" },
+    { 17, 25, "GPIO_C", "GPIOD17", "17" },
+    { 16, 26, "GPIO_D", "GPIOD16", "16" },
+    { 15, 27, "GPIO_E", "GPIOD15", "15" },
+    { 14, 28, "GPIO_F", "GPIOD14", "14" },
+    { 13, 29, "GPIO_G", "GPIOD13", "13" },
+    { 12, 30, "GPIO_H", "GPIOD12", "12" },
+    { 11, 31, "GPIO_I", "GPIOD11", "11" },
+    { 10, 32, "GPIO_J", "GPIOD10", "10" },
+    { 27, 33, "GPIO_K", "GPIOD27", "27" },
+    { 26, 34, "GPIO_L", "GPIOD26", "26" },
 };
 
 
@@ -80,6 +96,9 @@ int init_96Boards_GPIO_library(char * board){
         ret = 0;
     } else if (!strcmp(board, "hikey")){
         current_board = hikey;
+        ret = 0;
+    } else if (!strcmp(board, "bubblegum")){
+        current_board = bubblegum;
         ret = 0;
     }
     return(ret);

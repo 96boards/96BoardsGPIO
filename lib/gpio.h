@@ -28,7 +28,6 @@
 
 extern int init_96Boards_GPIO_library(char * );
 extern int open_GPIO_Board_pin_number( int );
-extern int open_GPIO_SoC_number( int );
 extern int close_GPIO( int );
 extern int setup_GPIO( int, char * );
 extern int digitalRead( int );

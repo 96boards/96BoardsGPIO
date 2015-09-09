@@ -165,27 +165,6 @@ int open_GPIO_Board_pin_number( int pin ) {
     return(ret);
 }
 
-int open_GPIO_SoC_number( int gpio ) {
-    int ret = -1;
-    int x;
-    char gpio_path[50];
-    struct GPIO_VALUES * board;
-    
-    for (x=0, board  = current_board; x<12 ;x++, board++){
-        if (board->SoC_number == gpio){
-            info = &gpio_info[x];
-            info->SoC_number = board->SoC_number;
-            info->gpio = board->SoC_text_number;
-            strcpy(gpio_path,"/sys/class/gpio/gpio");
-            strcat(gpio_path,info->gpio);
-            strcat(gpio_path,"/");
-            ret = open_GPIO( info, gpio_path );
-            break;
-        }
-    }
-    return(ret);
-}
-
 int close_GPIO( int pin ) {
     int ret = -1;
     int fd;

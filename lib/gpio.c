@@ -171,7 +171,7 @@ int open_GPIO_SoC_number( int gpio ) {
     char gpio_path[50];
     struct GPIO_VALUES * board;
     
-    for (x=0, info->SoC_number = 0, board  = current_board; x<12 ;x++, board++){
+    for (x=0, board  = current_board; x<12 ;x++, board++){
         if (board->SoC_number == gpio){
             info = &gpio_info[x];
             info->SoC_number = board->SoC_number;

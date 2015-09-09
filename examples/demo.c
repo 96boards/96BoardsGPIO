@@ -46,100 +46,107 @@
 #include "gpio.h"
 #include <unistd.h>
 
-void relay_on(struct GPIO_INFO *data){
-    digitalWrite(data, HIGH);
+void relay_on( int pin ){
+    digitalWrite(pin, HIGH);
     printf("Relay On\n");
     usleep(800000);
 }
 
-void relay_off(struct GPIO_INFO *data){
-    digitalWrite(data, LOW);
+void relay_off(int pin){
+    digitalWrite(pin, LOW);
     printf("Relay Off\n");
     usleep(800000);
 }
 
-void open_valve(struct GPIO_INFO *data1, struct GPIO_INFO *data2){
-    digitalWrite(data1, HIGH);
-    digitalWrite(data2, HIGH);
+void open_valve(int pin1, int pin2){
+    digitalWrite(pin1, HIGH);
+    digitalWrite(pin2, HIGH);
     printf("Valve Open\n");
     //sleep(4);
 }
 
-void close_valve(struct GPIO_INFO *data1, struct GPIO_INFO *data2){
-    digitalWrite(data1, LOW);
-    digitalWrite(data2, LOW);
+void close_valve(int pin1, int pin2){
+    digitalWrite(pin1, LOW);
+    digitalWrite(pin2, LOW);
     printf("Valve Closed\n");
     //sleep(4);
 }
 
+
+#define GPIO_P1 23
+#define GPIO_P2 24
+#define GPIO_P3 25
+#define GPIO_P4 26
+#define GPIO_P5 27
+#define GPIO_P6 29
+
 int main(){
     int loop1, loop2;
-    struct GPIO_INFO info1, info2, info3, info4, info5, info6;
 
     if (!init_96Boards_GPIO_library("dragon")){
         // Open the GPIO for use.  Do so by pin number on the 
         // Low Speed Expansion Connector. This could have been
         // done in other ways too.
-        open_GPIO_Board_pin_number(23, &info1);
-        open_GPIO_Board_pin_number(24, &info2);
-        open_GPIO_Board_pin_number(25, &info3);
-        open_GPIO_Board_pin_number(26, &info4);
-        open_GPIO_Board_pin_number(27, &info5);
-        open_GPIO_Board_pin_number(29, &info6);
+        open_GPIO_Board_pin_number(GPIO_P1);
+        open_GPIO_Board_pin_number(GPIO_P2);
+        open_GPIO_Board_pin_number(GPIO_P3);
+        open_GPIO_Board_pin_number(GPIO_P4);
+        open_GPIO_Board_pin_number(GPIO_P5);
+        open_GPIO_Board_pin_number(GPIO_P6);
         
         // Now set all 4 ports that we are using to out
-        setup_GPIO(&info1, "out");
-        setup_GPIO(&info2, "out");
-        setup_GPIO(&info3, "out");
-        setup_GPIO(&info4, "out");
-        setup_GPIO(&info5, "out");
-        setup_GPIO(&info6, "out");
+        setup_GPIO(GPIO_P1, "out");
+        setup_GPIO(GPIO_P2, "out");
+        setup_GPIO(GPIO_P3, "out");
+        setup_GPIO(GPIO_P4, "out");
+        setup_GPIO(GPIO_P5, "out");
+        setup_GPIO(GPIO_P6, "out");
         
         
         for (loop1 = 500;loop1;loop1--){
-            open_valve(&info1, &info2);
+            open_valve(GPIO_P1, GPIO_P2);
             for( loop2 = 5;loop2;loop2--){
-                relay_on(&info3);
-                relay_on(&info4);
-                digitalWrite(&info5, HIGH);
-                relay_off(&info4);
-                relay_off(&info3);
-                digitalWrite(&info5, LOW);
+                relay_on(GPIO_P3);
+                relay_on(GPIO_P4);
+                digitalWrite(GPIO_P5, HIGH);
+                relay_off(GPIO_P4);
+                relay_off(GPIO_P3);
+                digitalWrite(GPIO_P5, LOW);
             }
             for( loop2 = 5;loop2;loop2--){
-                relay_on(&info3);
-                relay_on(&info4);
-                digitalWrite(&info6, HIGH);
-                relay_off(&info3);
-                relay_off(&info4);
-                digitalWrite(&info6, LOW);
+                relay_on(GPIO_P3);
+                relay_on(GPIO_P4);
+                digitalWrite(GPIO_P6, HIGH);
+                relay_off(GPIO_P3);
+                relay_off(GPIO_P4);
+                digitalWrite(GPIO_P6, LOW);
             }
-            close_valve(&info1, &info2);
+            close_valve(GPIO_P1, GPIO_P2);
             for( loop2 = 5;loop2;loop2--){
-                relay_on(&info4);
-                relay_on(&info3);
-                digitalWrite(&info6, HIGH);
-                relay_off(&info4);
-                relay_off(&info3);
-                digitalWrite(&info6, LOW);
+                relay_on(GPIO_P4);
+                relay_on(GPIO_P3);
+                digitalWrite(GPIO_P6, HIGH);
+                relay_off(GPIO_P4);
+                relay_off(GPIO_P3);
+                digitalWrite(GPIO_P6, LOW);
             }
             for( loop2 = 5;loop2;loop2--){
-                relay_on(&info4);
-                relay_on(&info3);
-                digitalWrite(&info5, HIGH);
-                relay_off(&info3);
-                relay_off(&info4);
-                digitalWrite(&info5, LOW);
+                relay_on(GPIO_P4);
+                relay_on(GPIO_P3);
+                digitalWrite(GPIO_P5, HIGH);
+                relay_off(GPIO_P3);
+                relay_off(GPIO_P4);
+                digitalWrite(GPIO_P5, LOW);
             }
             
         }
         sleep(5);
-        close_GPIO(&info1);
-        close_GPIO(&info2);
-        close_GPIO(&info3);
-        close_GPIO(&info4);
-        close_GPIO(&info5);
-        close_GPIO(&info6);
+        close_GPIO(GPIO_P1);
+        close_GPIO(GPIO_P2);
+        close_GPIO(GPIO_P3);
+        close_GPIO(GPIO_P4);
+        close_GPIO(GPIO_P5);
+        close_GPIO(GPIO_P6);
     }
     return (0);
 }

@@ -32,6 +32,7 @@
 #include "gpio.h"
 
 #define GPIO_OFFSET 23
+#define NUM_PINS 12
 
 struct GPIO_INFO {
     int SoC_number;
@@ -94,7 +95,7 @@ static struct GPIO_VALUES bubblegum[] = {
     { 26, 34, "GPIO_L", "GPIOD26" },
 };
 
-static struct GPIO_INFO gpio_info[12];
+static struct GPIO_INFO gpio_info[NUM_PINS];
 static struct GPIO_INFO * info;
 
 int init_96Boards_GPIO_library(char * board){
@@ -147,9 +148,9 @@ int open_GPIO_Board_pin_number( int pin ) {
     char gpio_path[50];
     struct GPIO_VALUES * board;
     
-    if (pin >=23 && pin <= 34 ){
+    if (pin >=GPIO_OFFSET && pin < GPIO_OFFSET + NUM_PINS ){
         info = &gpio_info[pin - GPIO_OFFSET];
-        for (x=0, board = current_board; x<12 ;x++, board++){
+        for (x=0, board = current_board; x<NUM_PINS ;x++, board++){
             if (board->Board_pin_number == pin){
                 info->SoC_number = board->SoC_number;
 		snprintf(gpio_path, sizeof(gpio_path)-1, "/sys/class/gpio/gpio%d/", info->SoC_number);
@@ -166,7 +167,7 @@ int close_GPIO( int pin ) {
     int fd;
     char buf[8];
 
-    if (pin >=23 && pin <= 34 ){
+    if (pin >= GPIO_OFFSET && pin < GPIO_OFFSET + NUM_PINS ){
         info = &gpio_info[pin - GPIO_OFFSET];
         if (info->SoC_number ){
             if ((ret = fd = open("/sys/class/gpio/unexport", O_WRONLY))!= -1){
@@ -204,7 +205,7 @@ int digitalRead(int pin) {
     char value;
     
     
-    if (pin >=23 && pin <= 34 ){
+    if (pin >= GPIO_OFFSET && pin < GPIO_OFFSET + NUM_PINS ){
         info = &gpio_info[pin - GPIO_OFFSET];
         if (info->SoC_number){
             lseek(info->value_fd, 0, SEEK_SET);
@@ -226,7 +227,7 @@ int digitalRead(int pin) {
 int digitalWrite( int pin, int value ) {
     int ret = -1;
     
-    if (pin >=23 && pin <= 34 ){
+    if (pin >=GPIO_OFFSET && pin < GPIO_OFFSET + NUM_PINS ){
         info = &gpio_info[pin - GPIO_OFFSET];
         if (info->SoC_number){
             lseek(info->value_fd, 0, SEEK_SET);

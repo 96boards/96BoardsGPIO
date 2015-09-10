@@ -30,6 +30,7 @@ include $(SRCS:.c=.d)
 install:
 	-${CP} lib* /usr/local/lib/.
 	-${CP} gpio.h /usr/local/include/.
+	-${CP} *.py /usr/local/lib/python2.7/dist-packages/
 	-${LD}
 	
 clean:

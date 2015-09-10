@@ -35,10 +35,8 @@
 
 struct GPIO_INFO {
     int SoC_number;
-    int direction_fd;;
+    int direction_fd;
     int value_fd;
-    char * gpio;
-    char * path;
 };
 
 struct GPIO_VALUES {
@@ -121,18 +119,19 @@ int init_96Boards_GPIO_library(char * board){
 int open_GPIO( struct GPIO_INFO * info, char * gpio_path ) {
     int ret = -1;
     int fd;
-    char gpio_files[50];
-    
+    char buf[50];
+
     if (info->SoC_number){
         if ((ret = fd = open("/sys/class/gpio/export", O_WRONLY))!= -1){
-            if ((ret = write(fd, info->gpio, strlen(info->gpio)))!= -1){
+            ret = snprintf(buf, sizeof(buf)-1, "%d", info->SoC_number);
+            if ((ret = write(fd, buf, ret))!= -1){
                 if (!(ret = close(fd))){
-                    strcpy(gpio_files, gpio_path);
-                    strcat(gpio_files, "direction");
-                    if ((ret = info->direction_fd = open(gpio_files, O_RDWR))!= -1){
-                        strcpy(gpio_files, gpio_path);
-                        strcat(gpio_files, "value");
-                        if ((ret = info->value_fd = open(gpio_files, O_RDWR))!= -1){
+                    strcpy(buf, gpio_path);
+                    strcat(buf, "direction");
+                    if ((ret = info->direction_fd = open(buf, O_RDWR))!= -1){
+                        strcpy(buf, gpio_path);
+                        strcat(buf, "value");
+                        if ((ret = info->value_fd = open(buf, O_RDWR))!= -1){
                             ret = 0;
                         }
                     }
@@ -154,10 +153,7 @@ int open_GPIO_Board_pin_number( int pin ) {
         for (x=0, board = current_board; x<12 ;x++, board++){
             if (board->Board_pin_number == pin){
                 info->SoC_number = board->SoC_number;
-                info->gpio = board->SoC_text_number;
-                strcpy(gpio_path,"/sys/class/gpio/gpio");
-                strcat(gpio_path,info->gpio);
-                strcat(gpio_path,"/");
+		snprintf(gpio_path, sizeof(gpio_path)-1, "/sys/class/gpio/gpio%d/", info->SoC_number);
                 ret = open_GPIO( info, gpio_path );
                 break;
             }
@@ -169,14 +165,16 @@ int open_GPIO_Board_pin_number( int pin ) {
 int close_GPIO( int pin ) {
     int ret = -1;
     int fd;
-    
+    char buf[8];
+
     if (pin >=23 && pin <= 34 ){
         info = &gpio_info[pin - GPIO_OFFSET];
         if (info->SoC_number ){
             if ((ret = fd = open("/sys/class/gpio/unexport", O_WRONLY))!= -1){
                 close(info->direction_fd);
                 close(info->value_fd);
-                if ((ret = write(fd, info->gpio, strlen(info->gpio)))!= -1){
+		ret = snprintf(buf, sizeof(buf)-1, "%d", info->SoC_number);
+                if ((ret = write(fd, buf, ret))!= -1){
                     ret = close(fd);
                 }
             }

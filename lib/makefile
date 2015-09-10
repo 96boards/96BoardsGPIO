@@ -4,6 +4,8 @@ CC = gcc # C compiler
 CFLAGS = -fPIC -Wall -Wextra -O2 -g # C flags
 LDFLAGS = -shared  # linking flags
 RM = rm -f  # rm command
+CP = cp -f  # cp command
+LD = ldconfig
 TARGET_LIB = lib96BoardsGPIO.so # target lib
 SL = ln -sf
 
@@ -23,7 +25,14 @@ $(SRCS:.c=.d):%.d:%.c
 
 include $(SRCS:.c=.d)
 
-.PHONY: clean
+.PHONY: clean install
+
+install:
+	-${CP} lib* /usr/local/lib/.
+	-${CP} gpio.h /usr/local/include/.
+	-${LD}
+	
 clean:
 	-${RM} lib* ${OBJS} $(SRCS:.c=.d)
+
 

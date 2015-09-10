@@ -51,13 +51,13 @@ struct GPIO_VALUES {
 
 static struct GPIO_VALUES * current_board;
 
+/*    {   4, 28, "GPIO_F", "GPIO_4", "  4" },*/
 static struct GPIO_VALUES dragon[] = { 
     {  36, 23, "GPIO_A", "GPIO_36", "36" },
     {  12, 24, "GPIO_B", "GPIO_12", "12" },
     {  13, 25, "GPIO_C", "GPIO_13", "13" },
     {  69, 26, "GPIO_D", "GPIO_69", "69" },
     { 115, 27, "GPIO_E", "GPIO_115", "115" },
-/*    {   4, 28, "GPIO_F", "GPIO_4", "  4" },*/
     { 507, 28, "GPIO_F", "GPIO_4", "507" },
     {  24, 29, "GPIO_G", "GPIO_24", "24" },
     {  25, 30, "GPIO_H", "GPIO_25", "25" },
@@ -103,14 +103,15 @@ static struct GPIO_INFO * info;
 int init_96Boards_GPIO_library(char * board){
     int ret = -1;
     
+    /* Set the entire array to 0's */
     memset(gpio_info,0,sizeof(gpio_info));
-    if (!strcmp(board, "dragon")){
+    if (!strcasecmp(board, "dragon")){
         current_board = dragon;
         ret = 0;
-    } else if (!strcmp(board, "hikey")){
+    } else if (!strcasecmp(board, "hikey")){
         current_board = hikey;
         ret = 0;
-    } else if (!strcmp(board, "bubblegum")){
+    } else if (!strcasecmp(board, "bubblegum")){
         current_board = bubblegum;
         ret = 0;
     }
@@ -150,7 +151,7 @@ int open_GPIO_Board_pin_number( int pin ) {
     
     if (pin >=23 && pin <= 34 ){
         info = &gpio_info[pin - GPIO_OFFSET];
-        for (x=0, info->SoC_number = 0, board = current_board; x<12 ;x++, board++){
+        for (x=0, board = current_board; x<12 ;x++, board++){
             if (board->Board_pin_number == pin){
                 info->SoC_number = board->SoC_number;
                 info->gpio = board->SoC_text_number;

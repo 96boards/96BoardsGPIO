@@ -13,7 +13,7 @@ CFLAGS = -Wall -g
 
 # define any directories containing header files other than /usr/include
 #
-INCLUDES = -I.  -I../lib
+INCLUDES = -I.  -I/usr/local/include -I../lib
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
@@ -26,9 +26,9 @@ LFLAGS =  -L../lib
 LIBS = -l96BoardsGPIO
 
 # define the C source files
-SRCS = demo.c
+SRCS = blink.c
 
-IFILES = ../lib/gpio.h
+#IFILES = ../lib/gpio.h
 
 # define the C object files 
 #
@@ -41,7 +41,7 @@ IFILES = ../lib/gpio.h
 OBJS = $(SRCS:.c=.o)
 
 # define the executable file 
-MAIN = demo
+MAIN = blink
 
 #
 # The following part of the makefile is generic; it can be used to 
@@ -52,7 +52,7 @@ MAIN = demo
 .PHONY: depend clean
 
 all:    $(MAIN)
-	@echo  demo has been compiled.
+	@echo  blink has been compiled.
 
 $(MAIN): $(OBJS) $(IFILES)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
@@ -69,5 +69,4 @@ clean:
 
 depend: $(SRCS) $(IFILES)
 	$CC -M $(INCLUDES) $^
-
 # DO NOT DELETE THIS LINE -- make depend needs it

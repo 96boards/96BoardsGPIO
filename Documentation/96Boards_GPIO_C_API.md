@@ -52,9 +52,9 @@ A call where the config file is in /etc/96boards_gpio.conf
 
 ```C  
     if (!init_96Boards_GPIO_library()){  
-	do something init was good  
+        library init was successful  
     } else {  
-        exit init was bad  
+        library init failed
     }  
 ```
 
@@ -63,10 +63,10 @@ A call for a dragon board would look like:
 
 
 ```C  
-    if (!init_96Boards_GPIO_library(“dragon”)){  
-        do something init was good  
+    if (!init_96Boards_GPIO_library("dragon")){  
+        library init was successful  
     } else {  
-	exit init was bad  
+        library init failed
     }  
 ```
 
@@ -75,10 +75,10 @@ A call for a hikey board would look like:
 
 
 ```C  
-    if (!init_96Boards_GPIO_library(“hikey”)){  
-        do something init was good  
+    if (!init_96Boards_GPIO_library("hikey")){  
+        library init was successful  
     } else {  
-	exit init was bad  
+        library init failed
     }  
 ```
 
@@ -91,9 +91,9 @@ A call to open the first GPIO pin would look like:
 
 ```C  
     if (!open_GPIO_Board_pin_number(23)){  
-        do something, GPIO pin is open  
+        GPIO pin is avalible for use  
     } else {  
-        pin did not open exit  
+        open GPIO call failed  
     }  
 ```
 
@@ -107,7 +107,7 @@ To use the GPIO for input:
 
 ```C  
     if (!setup_GPIO(23, “in”)){  
-        do something call was succesfull, GPIO is setup for input  
+        setup call was succesfull, GPIO is setup for input  
     } else {  
         setup call failed pin is in unknown state  
     }  
@@ -119,7 +119,7 @@ To use the GPIO for output:
 
 ```C  
     if (!setup_GPIO(23, “out”)){  
-        do something call was succesfull, GPIO is setup for output  
+        setup call was succesfull, GPIO is setup for output  
     } else {  
         setup call failed pin is in unknown state  
     }  
@@ -135,12 +135,12 @@ Once you open a GPIO pin and set it to input you can use this call to see if the
   
     if (x = digitalRead(23) != -1){  
         if (x == HIGH){  
-                do something based on the pin being high  
+            pin read, it's HIGH  
         } else {  
-                do something based on the pin being low  
+            pin read, it's LOW  
         }  
     } else {  
-        something is wrong, call returned -1 error  
+        digitialRead call failed, returned -1 error  
     }  
 ```
 
@@ -151,15 +151,15 @@ Once you open a GPIO pin and set it to output you can use this call to set the p
 
 ```C  
     if (!digitalWrite(23, HIGH)){  
-        do something based on setting the pin high.  Call was successful  
+        digitialWrite call was successful, output is HIGH  
     } else {  
-        some kind of error happened, call failed  
+        digitalWrite call failed, some kind of error happened   
     }  
   
     if (!digitalWrite(23, LOW)){  
-        do something based on setting the pin low.  Call was successful  
+        digitialWrite call was successful, output is LOW  
     } else {  
-        some kind of error happened, call failed  
+        digitalWrite call failed, some kind of error happened 
     }  
 ```
 

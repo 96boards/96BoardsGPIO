@@ -98,12 +98,39 @@ static struct GPIO_VALUES bubblegum[] = {
 static struct GPIO_INFO gpio_info[NUM_PINS];
 static struct GPIO_INFO * info;
 
+static struct GPIO_VALUES* get_from_config() {
+    int i, rc;
+    FILE *fp;
+    struct GPIO_VALUES *board = NULL;
+
+    fp = fopen("/etc/96boards_gpio.conf", "r");
+    if (fp) {
+        board = malloc(sizeof(struct GPIO_VALUES) * NUM_PINS);
+       for(i=0; i<NUM_PINS; i++) {
+           board[i].Board_text_name = malloc(128);
+           board[i].SoC_text_name = malloc(128);
+            rc = fscanf(fp, "%d %d %s %s",
+                       &(board[i].SoC_number), &(board[i].Board_pin_number),
+                        board[i].Board_text_name, board[i].SoC_text_name);
+            if (rc != 4) {
+                fprintf(stderr, "Invalid format for /etc/96boards_gpio.conf\n");
+                exit(1);
+            }
+        }
+    }
+    return board;
+}
+
 int init_96Boards_GPIO_library(char * board){
     int ret = -1;
     
     /* Set the entire array to 0's */
     memset(gpio_info,0,sizeof(gpio_info));
-    if (!strcasecmp(board, "dragon")){
+    
+    current_board = get_from_config();
+    if(current_board){
+        ret = 0;
+    } else if (!strcasecmp(board, "dragon")){
         current_board = dragon;
         ret = 0;
     } else if (!strcasecmp(board, "hikey")){

@@ -164,7 +164,7 @@ Once you open a GPIO pin and set it to output you can use this call to set the p
 ```
 
 ##close_GPIO  
-IS no longer required to use before you close your application.  If you want to close a GPIO pin while your application is executing you may but the library will clean up all in use GPIO at application exit. Simply call close_GPIO with the pin number you opened and want to close. This call will return 0 on a good call or -1 if it fails for any reason.  
+The close_GPIO call is no longer required to be used before you close your application.  If you want to close a GPIO pin while your application is executing you may but the library will clean up all in use GPIO at application exit. Simply call close_GPIO with the pin number you opened and want to close. This call will return 0 on a good call or -1 if it fails for any reason.  
 
 ```C  
     close_GPIO(23);  

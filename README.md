@@ -1,3 +1,6 @@
+#96BoardGPIO library  
+##Overview  
+
 This is the rudimentary beginnings of the 96BoardGPIO library
 to control real world hardware via the GPIO on the 96Boards family of
 boards that confirm to the CE spec.
@@ -14,22 +17,44 @@ The 96BoardGPIO library trys to abstract the info so that you can just
 tell it what board you are using and what pins you want to use and the
 library does the rest.
 
-Early days, there are lots of improvements that can and I expect will
-be made.  Lookup tables need to be externalized into XML so that the library
-will not requre recomplation to add a new 96Boards board.  We need to
-identify how we know what board is what at run time so we only need to call
-an init library call and not have to input the board name.  The entire read
-side needs work to setup and control the input settings.
+##Work Needed  
+Early days, there are lots of improvements that can and I expect will be
+made.  The library can now look in /etc/96boards_gpio.conf for config data
+about this board.  It would be nice to add lookup tables that are external
+and converted into XML so that the library will not requre recomplation to
+add a new 96Boards board.  We need to identify how we know what board is
+what at run time so we only need to call an init library call and not have
+to input the board name.  The entire read side needs work to setup and
+control the input settings.  Lots of work remaining in the kernel for
+96Boards.
 
-In the mean time the demo.c file is a demo of running a motorized 
-1" 12 vdc ball valve via a 5 vdc set of relays and turning on and off
-said relays just becasue we can. 
+##Example code  
+In the mean time the blink.c file is a demo of blinking an LED on pin 23. 
+There is a blink.py file that uses the Python bindings to the C shared
+library.
+
+##Install the source code  
+So to install the library and test it with the example blink code you need
+to do the following:
+
+**git clone https://github.com/96boards/96BoardsGPIO.git**  
+
+cd 96BoardsGPIO/lib
+make
+sudo make install
+
+cd ../examples
+make
+sudo ./bink
+sudo ./plink.py
 
 The code so far has been tested on a Dragonboard 410 c where it is known to
 work very well.
 
-The gpio.c file will become a shared library that will be the under pinings
-of a Python, Perl, Java and C++ librarys.  First to finish the C version.
+The gpio.c file is a shared library that will be the under pinnings
+of a Python, Perl, Java and C++ librarys.
+
+##License
 
 This library (96BoardsGPIO) is free software; you can redistribute it
 and/or modify it under the terms of the GNU Lesser General Public License

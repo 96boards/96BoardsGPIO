@@ -121,9 +121,18 @@ static struct GPIO_VALUES* get_from_config() {
     return board;
 }
 
+void close_96Boards_GPIO_library(void){
+    /* Clean up all open GPIO and then exit */
+    int x;
+    
+    for (x=GPIO_OFFSET;x<(GPIO_OFFSET+NUM_PINS);x++){
+        close_GPIO(x);
+    }
+    return;    
+}
+
 int init_96Boards_GPIO_library(char * board){
     int ret = -1;
-    
     /* Set the entire array to 0's */
     memset(gpio_info,0,sizeof(gpio_info));
     
@@ -140,6 +149,7 @@ int init_96Boards_GPIO_library(char * board){
         current_board = bubblegum;
         ret = 0;
     }
+    atexit(close_96Boards_GPIO_library);
     return(ret);
 }
 

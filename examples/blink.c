@@ -36,8 +36,6 @@ int main(int argc, char * argv[])
                  /* Could not set direction */
                  return(-1);
              }
-             // Now close the GPIO used
-             close_GPIO(GPIO_P1);
          } else {
              /* Could not open GPIO pin */
              return(-1);

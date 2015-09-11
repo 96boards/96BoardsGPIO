@@ -13,7 +13,9 @@ If you have programmed an Arduino or other embedded board the GPIO the calls sho
 ##init_96Boards_GPIO_library
 This call can take the name of the board it’s running on, and returns 0 on a good init or -1 if it fails for any reason.  Or if you have put a config file in /etc called “96boards_gpio.conf” and it contains the proper board information, you don’t need to supply a board name at all.  If a proper config file is in /etc/96boards_gpio.conf it will override the named call anyway.  
 Example of DragonBoard 410c config file:  
-**`        36  23 GPIO_A GPIO_36  
+
+```
+        36  23 GPIO_A GPIO_36  
         12  24 GPIO_B GPIO_12  
         13  25 GPIO_C GPIO_13  
         69  26 GPIO_D GPIO_69  
@@ -24,9 +26,13 @@ Example of DragonBoard 410c config file:
         35  31 GPIO_I GPIO_35  
         34  32 GPIO_J GPIO_34  
         28  33 GPIO_K GPIO_28  
-        33  34 GPIO_L GPIO_33  `**  
+        33  34 GPIO_L GPIO_33
+```
+
 Example of a HiKey board config file:  
-**`        488  23 GPIO_A GPIO_488  
+
+```
+        488  23 GPIO_A GPIO_488  
         289  24 GPIO_B GPIO_489  
         490  25 GPIO_C GPIO_490  
         491  26 GPIO_D GPIO_491  
@@ -37,8 +43,8 @@ Example of a HiKey board config file:
         426  31 GPIO_I GPIO_426  
         433  32 GPIO_J GPIO_433  
         427  33 GPIO_K GPIO_427  
-        434  34 GPIO_L GPIO_434  `**  
-
+        434  34 GPIO_L GPIO_434  
+```
 
 The file format is: int, int, string, string which is: GPIO calling number, Low Speed Pin number, 96Boards GPIO name, SoC’s sys/class/gpio name.  If it’s in place, the init call uses this data to setup the library and does not need the name of the board to init the library.  
 A call where the config file is in /etc/96boards_gpio.conf  

@@ -39,14 +39,14 @@ to do the following:
 
 **git clone https://github.com/96boards/96BoardsGPIO.git**  
 
-cd 96BoardsGPIO/lib
-make
-sudo make install
+cd 96BoardsGPIO/lib  
+make  
+sudo make install  
 
-cd ../examples
-make
-sudo ./bink
-sudo ./plink.py
+cd ../examples  
+make  
+sudo ./bink  
+sudo ./plink.py  
 
 The code so far has been tested on a Dragonboard 410 c where it is known to
 work very well.

@@ -17,6 +17,20 @@ The 96BoardGPIO library trys to abstract the info so that you can just
 tell it what board you are using and what pins you want to use and the
 library does the rest.
 
+##create96BoardsConfig application
+
+This application will printout a 96Board.conf file for you so you can add 
+it to /etc/.  Just run it:  
+**$ create96BoardsConfig {board} > 96boards_gpio.conf**  
+** $ sudo mv 96boards_gpio.conf /etc/96boards_gpio.conf**  
+
+where {board} is ** dragon, hikey or bubblegum** and it will printout the 
+contents of the required .conf for that board.
+
+Eventually this application will not be needed but until that time it is 
+the easiest way to get your applications that use gpio to run across the
+the 96BOards family. 
+
 ##Work Needed  
 Early days, there are lots of improvements that can and I expect will be
 made.  The library can now look in /etc/96boards_gpio.conf for config data

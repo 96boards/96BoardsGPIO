@@ -17,6 +17,7 @@ int main(int argc, char * argv[])
     if (argc == 2 && (!strcasecmp(argv[1], "dragon") || !strcasecmp(argv[1], "hikey")|| !strcasecmp(argv[1], "bubblegum")) ) {
         strcpy(board,argv[1]);
     }else{
+        printf("defaulted ot dragonboard\n");
         strcpy(board,"dragon");
     }
     if (!init_96Boards_GPIO_library(board)){

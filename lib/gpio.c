@@ -99,23 +99,30 @@ static struct GPIO_INFO gpio_info[NUM_PINS];
 static struct GPIO_INFO * info;
 
 static struct GPIO_VALUES* get_from_config() {
-    int i, rc;
+    int i=0, rc;
     FILE *fp;
+    char line[256];
     struct GPIO_VALUES *board = NULL;
 
     fp = fopen("/etc/96boards_gpio.conf", "r");
     if (fp) {
         board = malloc(sizeof(struct GPIO_VALUES) * NUM_PINS);
-       for(i=0; i<NUM_PINS; i++) {
-           board[i].Board_text_name = malloc(128);
-           board[i].SoC_text_name = malloc(128);
-            rc = fscanf(fp, "%d %d %s %s",
-                       &(board[i].SoC_number), &(board[i].Board_pin_number),
-                        board[i].Board_text_name, board[i].SoC_text_name);
-            if (rc != 4) {
-                fprintf(stderr, "Invalid format for /etc/96boards_gpio.conf\n");
+        while(fgets(line, sizeof line, fp)) {
+            if (*line == '#' || *line == '\0') continue;
+            if (i>=NUM_PINS) {
+                fprintf(stderr, "Invalid format for /etc/96boards_gpio.conf (too many pins)\n");
                 exit(1);
             }
+            board[i].Board_text_name = malloc(128);
+            board[i].SoC_text_name = malloc(128);
+            rc = sscanf(line, "%d %d %s %s",
+                        &(board[i].SoC_number), &(board[i].Board_pin_number),
+                        board[i].Board_text_name, board[i].SoC_text_name);
+            if (rc != 4) {
+                fprintf(stderr, "Invalid line in /etc/96boards_gpio.conf:\n%s\n", line);
+                exit(1);
+            }
+            i++;
         }
     }
     return board;

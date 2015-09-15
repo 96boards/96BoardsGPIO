@@ -19,10 +19,16 @@ def blink(gpio):
 
 if __name__ == '__main__':
     import argparse
+    import os
+
+    mapping_file_exists = os.path.exists('/etc/96boards_gpio.conf')
     parser = argparse.ArgumentParser(
         description='Blink LED on GPIO 1 (pin 23)')
-    parser.add_argument('board', help='Name of board. eg dragon')
+    if not mapping_file_exists:
+        parser.add_argument('board', help='Name of board. eg dragon')
     args = parser.parse_args()
+    if mapping_file_exists:
+        args.board = ''
 
     with GPIO(args.board, pins) as gpio:
         blink(gpio)

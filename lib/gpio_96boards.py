@@ -37,8 +37,6 @@ class GPIO(object):
 
     def __exit__(self, type, value, traceback):
         self.in_ctx = False
-        for pin, _ in self.pins:
-            GPIO._lib.close_GPIO(pin)
 
     def digital_read(self, pin):
         assert type(pin) == int

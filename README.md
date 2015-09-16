@@ -21,15 +21,15 @@ library does the rest.
 
 This application will printout a 96Board.conf file for you so you can add 
 it to /etc/.  Just run it:  
-**$ create96BoardsConfig {board} > 96boards_gpio.conf**  
-** $ sudo mv 96boards_gpio.conf /etc/96boards_gpio.conf**  
+**$ create96BoardsConfig {board} | sudo tee /etc/96boards_gpio.conf >/dev/null**  
 
 where {board} is ** dragon, hikey or bubblegum** and it will printout the 
 contents of the required .conf for that board.
 
 Eventually this application will not be needed but until that time it is 
 the easiest way to get your applications that use gpio to run across the
-the 96BOards family. 
+the 96BOards family. There is an install function in the makefile, see 
+below.
 
 ##Work Needed  
 Early days, there are lots of improvements that can and I expect will be
@@ -56,6 +56,16 @@ to do the following:
 cd 96BoardsGPIO/lib  
 make  
 sudo make install  
+
+cd ../96BoardConfig  
+make  
+sudo make install BOARD="**board name**"  
+
+--
+Where "**board name**" is dragon or hikey or bubblegum  This will install 
+a config file in /etc/96boards_gpio.conf that contains the correct GPIO 
+lookup values for the board requested.
+--
 
 cd ../examples  
 make  

@@ -46,7 +46,7 @@ MAIN = create96BoardsConfig
 # deleting dependencies appended to the file from 'make depend'
 #
 
-.PHONY: clean
+.PHONY: clean install
 
 all:    $(MAIN)
 	@echo  create96BoardsConfig has been compiled.
@@ -60,6 +60,10 @@ $(MAIN): $(OBJS) $(IFILES)
 # (see the gnu make manual section about automatic variables)
 .c.o:  $(IFILES)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
+
+install:
+	./$(MAIN) $(BOARD) | sudo tee /etc/96boards_gpio.conf > /dev/null
+	
 
 clean:
 	$(RM) *.o *~ $(MAIN)

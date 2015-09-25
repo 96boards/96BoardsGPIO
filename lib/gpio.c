@@ -29,8 +29,11 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <ctype.h>
 #include "gpio.h"
 
+
+#define ALPHA_OFFSET 42
 #define GPIO_OFFSET 23
 #define NUM_PINS 12
 
@@ -127,6 +130,31 @@ int open_GPIO( struct GPIO_INFO * info, char * gpio_path ) {
                         }
                     }
                 }
+            }
+        }
+    }
+    return(ret);
+}
+
+
+int open_GPIO_Board_alpha( int gpio ) {
+    int ret = -1;
+    int x;
+    char gpio_path[50];
+    struct GPIO_VALUES * board;
+    int pin;
+    
+    // Convert the char to upper case and subtract the ALPHA_OFFSET to arrive at the pin number to activate
+    pin = toupper(gpio) - ALPHA_OFFSET;
+    
+    if (pin >=GPIO_OFFSET && pin < GPIO_OFFSET + NUM_PINS ){
+        info = &gpio_info[pin - GPIO_OFFSET];
+        for (x=0, board = current_board; x<NUM_PINS ;x++, board++){
+            if (board->Board_pin_number == pin){
+                info->SoC_number = board->SoC_number;
+		snprintf(gpio_path, sizeof(gpio_path)-1, "/sys/class/gpio/gpio%d/", info->SoC_number);
+                ret = open_GPIO( info, gpio_path );
+                break;
             }
         }
     }

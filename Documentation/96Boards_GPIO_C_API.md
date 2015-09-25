@@ -3,10 +3,11 @@
 The C API is very straightforward to use.  There are currently only 6 calls available. They are:  
  1. int init_96Boards_GPIO_library(char * );  
  2. int open_GPIO_Board_pin_number( int );  
- 3. int setup_GPIO( int, char * );  
- 4. int digitalRead( int );  
- 5. int digitalWrite( int, int );  
- 6. int close_GPIO( int );  
+ 3. int open_GPIO_Board_aplha( int );
+ 4. int setup_GPIO( int, char * );  
+ 5. int digitalRead( int );  
+ 6. int digitalWrite( int, int );  
+ 7. int close_GPIO( int );  
 
 
 If you have programmed an Arduino or other embedded board the GPIO the calls should look familiar to you.  
@@ -84,6 +85,7 @@ A call for a hikey board would look like:
 
 
 This call is expected to change in the near future, once the kernel has a clear place to identify the board that we are running on the call will no longer need a config file or take a string name but will simply look in the proper kernel interface (/sys or /proc) and deal with it.  
+
 ##open_GPIO_Board_pin_number
 Once the init call is successful you can open a GPIO pin for use.  Simply call the open_GPIO_Board_pin_number with the pin number from the low speed connector that you are using.  It will be in the range of pin 23 to pin 34.  The call takes one pin number at a time, to open more than one GPIO pin call the function several times with successive pin numbers.  This call will return 0 on a good call or -1 if it fails for any reason.   
 A call to open the first GPIO pin would look like:  
@@ -91,6 +93,19 @@ A call to open the first GPIO pin would look like:
 
 ```C  
     if (!open_GPIO_Board_pin_number(23)){  
+        GPIO pin is avalible for use  
+    } else {  
+        open GPIO call failed  
+    }  
+```
+
+##open_GPIO_Board_alpha
+Once the init call is successful you can open a GPIO for use.  Simply call the open_GPIO_Board_alpha with the aplhebetical reference id from the low speed connector that you are using.  It will be in the range of A to L.  The call takes one alpha reference at a time, to open more than one GPIO call the function several times with successive alpha references.  This call will return 0 on a good call or -1 if it fails for any reason.   
+A call to open the first GPIO pin would look like:  
+
+
+```C  
+    if (!open_GPIO_Board_pin_number('A')){  
         GPIO pin is avalible for use  
     } else {  
         open GPIO call failed  

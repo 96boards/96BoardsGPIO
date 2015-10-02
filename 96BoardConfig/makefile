@@ -63,7 +63,7 @@ $(MAIN): $(OBJS) $(IFILES)
 
 install: $(MAIN)
 	./$(MAIN) $(BOARD) | sudo tee /etc/96boards_gpio.conf > /dev/null
-	
+	sudo cp pin-mappings.sh /etc/profile.d/Z96-pin-mappings.sh
 
 clean:
 	$(RM) *.o *~ $(MAIN)

@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: 96BoardsGPIO
+Description: 96Boards GPIO library
+Version: @VERSION@
+Libs: -L${libdir} -l96BoardsGPIO
+Cflags: -I${includedir}

@@ -13,5 +13,7 @@ AM_PROG_CC_C_O
 
 LT_INIT
 
+AC_SEARCH_LIBS([libsoc_board_init, libsoc_board_gpio_id],[soc], , AC_MSG_ERROR(["Could not find libsoc library: https://github.com/jackmitch/libsoc"]))
+
 AC_CONFIG_FILES(Makefile lib/Makefile examples/Makefile 96BoardsGPIO.pc)
 AC_OUTPUT

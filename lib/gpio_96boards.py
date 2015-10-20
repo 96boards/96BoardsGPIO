@@ -6,16 +6,9 @@ class GPIO(object):
     HIGH = 1
     LOW = 0
 
-    _lib = None
+    _lib = ctypes.CDLL('lib96BoardsGPIO.so')
 
-    def __init__(self, board_name, pins):
-        assert type(board_name) == str
-        if not GPIO._lib:
-            GPIO._lib = ctypes.CDLL('lib96BoardsGPIO.so')
-
-        if GPIO._lib.init_96Boards_GPIO_library(board_name):
-            raise ValueError('Unknown board name: ' + board_name)
-
+    def __init__(self, pins):
         for pin in pins:
             if type(pin[0]) != int:
                 raise ValueError('Pin number must be an integer')
@@ -26,9 +19,7 @@ class GPIO(object):
 
     def __enter__(self):
         for pin, direction in self.pins:
-            if GPIO._lib.open_GPIO_Board_pin_number(pin):
-                raise RuntimeError('Unable to open pin: %d' % pin)
-            if GPIO._lib.setup_GPIO(pin, direction):
+            if GPIO._lib.gpio_open(pin, direction):
                 raise RuntimeError(
                     'Unable to set direction for pin(%d) to: %s' % (
                         pin, direction))
@@ -37,6 +28,10 @@ class GPIO(object):
 
     def __exit__(self, type, value, traceback):
         self.in_ctx = False
+
+    @staticmethod
+    def gpio_id(pin_name):
+        return GPIO._lib.gpio_id(pin_name)
 
     def digital_read(self, pin):
         assert type(pin) == int

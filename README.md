@@ -6,7 +6,7 @@ to control real world hardware via the GPIO on the 96Boards family of
 boards that confirm to the CE spec.
 
 One of the cool things about the 96Boards CE project is that all of the
-boards us the same pins for the Low Speed Expansion Connector so you can
+boards use the same pins for the Low Speed Expansion Connector so you can
 plug any expansion board into any 96Board and it will connect electrically
 BUT there is a issue where GPIO is concerned.  Different SoC's have
 different GPIO pins.  So even though electrically the pins are in the same

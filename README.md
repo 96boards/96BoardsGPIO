@@ -6,14 +6,14 @@ to control real world hardware via the GPIO on the 96Boards family of
 boards that confirm to the CE spec.
 
 One of the cool things about the 96Boards CE project is that all of the
-boards us the same pins for the Low Speed Expansion Connector so you can
+boards use the same pins for the Low Speed Expansion Connector so you can
 plug any expansion board into any 96Board and it will connect electrically
-BUT there is a issue where GPIO is concerned.  Different SoC's have
+BUT there is an issue where GPIO is concerned.  Different SoC's have
 different GPIO pins.  So even though electrically the pins are in the same
-place it takes differnt code to enable and use the GPIO on pins 23 - 34. 
+place it takes different code to enable and use the GPIO on pins 23 - 34. 
 Not so fun.
 
-The 96BoardGPIO library trys to abstract the info so that you can just
+The 96BoardGPIO library tries to abstract the info so that you can just
 tell it what board you are using and what pins you want to use and the
 library does the rest.
 
@@ -28,7 +28,7 @@ contents of the required .conf for that board.
 
 Eventually this application will not be needed but until that time it is 
 the easiest way to get your applications that use gpio to run across the
-the 96BOards family. There is an install function in the makefile, see 
+the 96Boards family. There is an install function in the makefile, see 
 below.
 
 ##Work Needed  

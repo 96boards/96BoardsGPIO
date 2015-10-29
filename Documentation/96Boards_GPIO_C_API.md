@@ -1,186 +1,81 @@
 #96BoardsGPIO C API
 ##Overview
-The C API is very straightforward to use.  There are currently only 6 calls available. They are:  
- 1. int init_96Boards_GPIO_library(char * );  
- 2. int open_GPIO_Board_pin_number( int );  
- 3. int open_GPIO_Board_aplha( int );
- 4. int setup_GPIO( int, char * );  
- 5. int digitalRead( int );  
- 6. int digitalWrite( int, int );  
- 7. int close_GPIO( int );  
+The C API is very straightforward to use.  There are currently only 6 calls available. They are:
 
+ 1. unsigned int gpio_id(const char *pin_name);
+ 2. unsigned int gpio_by_letter(char alpha);
+ 3. unsigned int gpio_by_pin(char pin_number);
+ 4. int gpio_open(unsigned int gpio_id, const char *direction);
+ 5. int digitalRead(unsigned int gpio_id);
+ 6. int digitalWrite(unsigned int gpio_id, unsigned int value);
 
-If you have programmed an Arduino or other embedded board the GPIO the calls should look familiar to you.  
-##init_96Boards_GPIO_library
-This call can take the name of the board it’s running on, and returns 0 on a good init or -1 if it fails for any reason.  Or if you have put a config file in /etc called “96boards_gpio.conf” and it contains the proper board information, you don’t need to supply a board name at all.  If a proper config file is in /etc/96boards_gpio.conf it will override the named call anyway.  
-Example of DragonBoard 410c config file:  
+If you have programmed an Arduino or other embedded board the GPIO the calls should look familiar to you.
 
-```
-        36  23 GPIO_A GPIO_36  
-        12  24 GPIO_B GPIO_12  
-        13  25 GPIO_C GPIO_13  
-        69  26 GPIO_D GPIO_69  
-        115 27 GPIO_E GPIO_115  
-        507 28 GPIO_F GPIO_4  
-        24  29 GPIO_G GPIO_24  
-        25  30 GPIO_H GPIO_25  
-        35  31 GPIO_I GPIO_35  
-        34  32 GPIO_J GPIO_34  
-        28  33 GPIO_K GPIO_28  
-        33  34 GPIO_L GPIO_33
+##gpio_id
+GPIO's on a given board are identified as GPIO_A ... GPIO_L. Each SoC has its
+own internal GPIO ID that corresponds to this. The gpio_id will tranform this
+name into the SoC's expected value. eg:
+```C
+ gpio_id("GPIO_A") == 488 // hikey
+ gpio_id("GPIO_A") == 36  // dragonboard410c
+ gpio_id("BAD VALUE") == -1
 ```
 
-Example of a HiKey board config file:  
-
-```
-        488  23 GPIO_A GPIO_488  
-        289  24 GPIO_B GPIO_489  
-        490  25 GPIO_C GPIO_490  
-        491  26 GPIO_D GPIO_491  
-        492 27 GPIO_E GPIO_492  
-        415 28 GPIO_F GPIO_415  
-        463  29 GPIO_G GPIO_463  
-        495  30 GPIO_H GPIO_495  
-        426  31 GPIO_I GPIO_426  
-        433  32 GPIO_J GPIO_433  
-        427  33 GPIO_K GPIO_427  
-        434  34 GPIO_L GPIO_434  
+##gpio_by_letter
+This is a helper function that can be used instead of gpio_id.
+```C
+ gpio_by_letter('A') == gpio_id("GPIO_A")
 ```
 
-The file format is: int, int, string, string which is: GPIO calling number, Low Speed Pin number, 96Boards GPIO name, SoC’s sys/class/gpio name.  If it’s in place, the init call uses this data to setup the library and does not need the name of the board to init the library.  
-A call where the config file is in /etc/96boards_gpio.conf  
-
-
-```C  
-    if (!init_96Boards_GPIO_library()){  
-        library init was successful  
-    } else {  
-        library init failed
-    }  
+##gpio_by_bin
+This is a helper function that can be used instead of gpio_id.
+```C
+ gpio_by_pin(23) == gpio_id("GPIO_A")
 ```
 
+##gpio_open
+Open a given GPIO in a given direction ("in" or "out")
+```C
+    if (!gpio_open(gpio_id("GPIO_A", "out")){
+        GPIO pin is avalible for use
+    } else {
+        open GPIO call failed
+    }
+```
 
-A call for a dragon board would look like:  
+##digitalRead
+Once you open a GPIO pin and set it to input you can use this call to see if the pin is HIGH, or LOW or -1 if some sort of error happened.  This call will return HIGH or LOW on a good call or -1 if it fails for any reason.
 
 
-```C  
-    if (!init_96Boards_GPIO_library("dragon")){  
-        library init was successful  
-    } else {  
-        library init failed
-    }  
+```C
+    int x;
+
+    if (x = digitalRead(23) != -1){
+        if (x == HIGH){
+            pin read, it's HIGH
+        } else {
+            pin read, it's LOW
+        }
+    } else {
+        digitialRead call failed, returned -1 error
+    }
 ```
 
 
-A call for a hikey board would look like:  
+##digitalWrite
+Once you open a GPIO pin and set it to output you can use this call to set the pin HIGH or LOW.  This call will return 0 on a good call or -1 if it fails for any reason.
 
 
-```C  
-    if (!init_96Boards_GPIO_library("hikey")){  
-        library init was successful  
-    } else {  
-        library init failed
-    }  
-```
+```C
+    if (!digitalWrite(23, HIGH)){
+        digitialWrite call was successful, output is HIGH
+    } else {
+        digitalWrite call failed, some kind of error happened
+    }
 
-
-This call is expected to change in the near future, once the kernel has a clear place to identify the board that we are running on the call will no longer need a config file or take a string name but will simply look in the proper kernel interface (/sys or /proc) and deal with it.  
-
-##open_GPIO_Board_pin_number
-Once the init call is successful you can open a GPIO pin for use.  Simply call the open_GPIO_Board_pin_number with the pin number from the low speed connector that you are using.  It will be in the range of pin 23 to pin 34.  The call takes one pin number at a time, to open more than one GPIO pin call the function several times with successive pin numbers.  This call will return 0 on a good call or -1 if it fails for any reason.   
-A call to open the first GPIO pin would look like:  
-
-
-```C  
-    if (!open_GPIO_Board_pin_number(23)){  
-        GPIO pin is avalible for use  
-    } else {  
-        open GPIO call failed  
-    }  
-```
-
-##open_GPIO_Board_alpha
-Once the init call is successful you can open a GPIO for use.  Simply call the open_GPIO_Board_alpha with the aplhebetical reference id from the low speed connector that you are using.  It will be in the range of A to L.  The call takes one alpha reference at a time, to open more than one GPIO call the function several times with successive alpha references.  This call will return 0 on a good call or -1 if it fails for any reason.   
-A call to open the first GPIO pin would look like:  
-
-
-```C  
-    if (!open_GPIO_Board_pin_number('A')){  
-        GPIO pin is avalible for use  
-    } else {  
-        open GPIO call failed  
-    }  
-```
-
-
-##setup_GPIO  
-
-
-Once you open a GPIO pin you need to tell the system if you are using it for input or output.  This is done using the setup_GPIO call.  This call will return 0 on a good call or -1 if it fails for any reason.  
-To use the GPIO for input:  
-
-
-```C  
-    if (!setup_GPIO(23, “in”)){  
-        setup call was succesfull, GPIO is setup for input  
-    } else {  
-        setup call failed pin is in unknown state  
-    }  
-```
-
-
-To use the GPIO for output:  
-
-
-```C  
-    if (!setup_GPIO(23, “out”)){  
-        setup call was succesfull, GPIO is setup for output  
-    } else {  
-        setup call failed pin is in unknown state  
-    }  
-```
-
-
-##digitalRead  
-Once you open a GPIO pin and set it to input you can use this call to see if the pin is HIGH, or LOW or -1 if some sort of error happened.  This call will return HIGH or LOW on a good call or -1 if it fails for any reason.  
-
-
-```C  
-    int x;  
-  
-    if (x = digitalRead(23) != -1){  
-        if (x == HIGH){  
-            pin read, it's HIGH  
-        } else {  
-            pin read, it's LOW  
-        }  
-    } else {  
-        digitialRead call failed, returned -1 error  
-    }  
-```
-
-
-##digitalWrite  
-Once you open a GPIO pin and set it to output you can use this call to set the pin HIGH or LOW.  This call will return 0 on a good call or -1 if it fails for any reason.  
-
-
-```C  
-    if (!digitalWrite(23, HIGH)){  
-        digitialWrite call was successful, output is HIGH  
-    } else {  
-        digitalWrite call failed, some kind of error happened   
-    }  
-  
-    if (!digitalWrite(23, LOW)){  
-        digitialWrite call was successful, output is LOW  
-    } else {  
-        digitalWrite call failed, some kind of error happened 
-    }  
-```
-
-##close_GPIO  
-The close_GPIO call is no longer required to be used before you close your application.  If you want to close a GPIO pin while your application is executing you may but the library will clean up all in use GPIO at application exit. Simply call close_GPIO with the pin number you opened and want to close. This call will return 0 on a good call or -1 if it fails for any reason.  
-
-```C  
-    close_GPIO(23);  
+    if (!digitalWrite(23, LOW)){
+        digitialWrite call was successful, output is LOW
+    } else {
+        digitalWrite call failed, some kind of error happened
+    }
 ```

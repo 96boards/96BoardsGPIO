@@ -1,3 +1,4 @@
+import os
 import ctypes
 
 
@@ -6,7 +7,12 @@ class GPIO(object):
     HIGH = 1
     LOW = 0
 
-    _lib = ctypes.CDLL('lib96BoardsGPIO.so')
+    try:
+        _lib = ctypes.CDLL('lib96BoardsGPIO.so')
+    except OSError:
+        # Library isn't in LD_LIBRARY_PATH, try based on relative location
+        here = os.path.join(os.path.dirname(__file__))
+        _lib = ctypes.CDLL(os.path.join(here, '../../lib96BoardsGPIO.so'))
 
     def __init__(self, pins):
         for pin in pins:

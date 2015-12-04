@@ -32,8 +32,11 @@ make && sudo make install
 # <board name>" is dragonboard410c or hikey or bubblegum.
 
 git clone https://github.com/96boards/96BoardsGPIO.git
+cd 96BoardsGPIO
 ./autogen.sh && ./configure
 make && sudo make install
+
+sudo ldconfig
 ```
 
 ##Example code

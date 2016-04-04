@@ -77,7 +77,6 @@ unsigned int gpio_by_letter(char alpha)
 		exit(1);
 	}
 	pin_name[5] = alpha;
-	printf("ANDY letter: [%s]\n", pin_name);
 	return gpio_id(pin_name);
 }
 
@@ -89,7 +88,6 @@ unsigned int gpio_by_pin(char pin_number)
 		exit(1);
 	}
 	pin_name[5] = pin_number - 23 + 'A';
-	printf("ANDY alpha: [%s]\n", pin_name);
 	return gpio_id(pin_name);
 }
 

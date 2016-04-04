@@ -115,7 +115,7 @@ int digitalRead(unsigned int gpio_id)
 	gpio_list *ptr = gpios;
 	while(ptr) {
 		if (ptr->g->gpio == gpio_id) {
-			return libsoc_gpio_wait_interrupt(ptr->g, -1);
+			return libsoc_gpio_get_level(ptr->g);
 		}
 		ptr = ptr->next;
 	}

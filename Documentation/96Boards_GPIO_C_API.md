@@ -27,7 +27,7 @@ This is a helper function that can be used instead of gpio_id.
  gpio_by_letter('A') == gpio_id("GPIO_A")
 ```
 
-##gpio_by_bin
+##gpio_by_pin
 This is a helper function that can be used instead of gpio_id.
 ```C
  gpio_by_pin(23) == gpio_id("GPIO_A")

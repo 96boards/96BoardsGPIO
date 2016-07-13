@@ -55,13 +55,13 @@ unsigned int gpio_id(const char *pin_name)
 {
 	if (!config)
 		config = libsoc_board_init();
-	/* Some original documents refer to pins as GPIO-A, but our conf files
-	 * use GPIO_A. Try to fix this for the user if needed.
+	/* Some original documents refer to pins as GPIO_A, but our conf files
+	 * use GPIO-A. Try to fix this for the user if needed.
 	 */
-	if (pin_name[4] == '-') {
+	if (pin_name[4] == '_') {
 		unsigned int gpio_id;
 		char *fixed = strdup(pin_name);
-		fixed[4] = '_';
+		fixed[4] = '-';
 		gpio_id = libsoc_board_gpio_id(config, fixed);
 		free(fixed);
 		return gpio_id;

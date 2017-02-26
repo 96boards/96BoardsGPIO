@@ -45,8 +45,8 @@ an LED hooked up to pin 23(A).
 ```
 cd ./examples
 make
-sudo ./bink
-sudo ./plink.py
+sudo ./blink
+sudo python blink.py
 ```
 
 The code so far has been tested on a Dragonboard 410 c where it is known to

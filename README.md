@@ -3,7 +3,7 @@
 
 This is the rudimentary beginnings of the 96BoardGPIO library
 to control real world hardware via the GPIO on the 96Boards family of
-boards that confirm to the CE spec.
+boards that conform to the CE spec.
 
 One of the cool things about the 96Boards CE project is that all of the
 boards use the same pins for the Low Speed Expansion Connector so you can

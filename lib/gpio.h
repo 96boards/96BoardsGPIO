@@ -26,6 +26,11 @@
 #define HIGH 1
 #define LOW 0
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Look up gpio ID by pin name, eg "GPIO_A"
 unsigned int gpio_id(const char *pin_name);
 // Look up gpio ID by letter, eq 'A'
@@ -38,3 +43,7 @@ int gpio_open(unsigned int gpio_id, const char *direction);
 int digitalRead(unsigned int gpio_id);
 // Set a GPIO in OUTPUT mode to HIGH(1) or LOW(0)
 int digitalWrite(unsigned int gpio_id, unsigned int value);
+
+#ifdef __cplusplus
+}
+#endif

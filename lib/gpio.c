@@ -95,7 +95,7 @@ int gpio_open(unsigned int gpio_id, const char *direction)
 {
 	int rc = -1;
 	gpio_list *ptr;
-	gpio *g = libsoc_gpio_request(gpio_id, LS_SHARED);
+	gpio *g = libsoc_gpio_request(gpio_id, LS_GPIO_SHARED);
 	if (!g)
 		return rc;
 	if (!strcmp(direction, "in"))
